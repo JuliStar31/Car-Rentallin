@@ -1,0 +1,86 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container my-5">
+  <div class="row align-items-center mb-5">
+    <div class="col">
+      <h2 class="mb-1 text-white font-outfit font-weight-bold">Riwayat Pemesanan Sewa</h2>
+      <p class="text-muted mb-0">Pantau status transaksi pemesanan mobil Anda di sini secara real-time</p>
+    </div>
+  </div>
+
+  <!-- Banner Notifikasi Berhasil -->
+  <% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(16, 185, 129, 0.15); color: #34d399; border-radius: 8px;">
+      <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+      <div class="small"><%= success %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <!-- Tabel Riwayat Transaksi -->
+  <div class="table-responsive-custom shadow-lg">
+    <table class="table table-custom mb-0">
+      <thead>
+        <tr>
+          <th>ID Booking</th>
+          <th>Unit Mobil</th>
+          <th class="text-center">Tanggal Mulai</th>
+          <th class="text-center">Tanggal Selesai</th>
+          <th class="text-end">Total Biaya</th>
+          <th class="text-center">Status Pemesanan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (bookings && bookings.length > 0) { %>
+          <% bookings.forEach(booking => { %>
+            <tr>
+              <td>
+                <span class="text-white font-outfit font-weight-bold">#RNT-<%= booking.id %></span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img src="/uploads/<%= booking.gambar %>" alt="<%= booking.nama_mobil %>" class="rounded me-3 shadow-sm" style="width: 75px; height: 48px; object-fit: cover; border: 1px solid var(--card-border);" onerror="this.src='/uploads/default-car.jpg'">
+                  <div>
+                    <span class="d-block text-white font-weight-bold mb-0"><%= booking.nama_mobil %></span>
+                    <span class="text-muted small"><%= booking.merek %></span>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center text-white"><%= new Date(booking.tanggal_mulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></td>
+              <td class="text-center text-white"><%= new Date(booking.tanggal_selesai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></td>
+              <td class="text-end text-white font-weight-bold font-outfit">
+                <%= new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(booking.total_harga) %>
+              </td>
+              <td class="text-center">
+                <% if (booking.status === 'Pending') { %>
+                  <span class="badge-custom badge-pending"><i class="fa-solid fa-spinner fa-spin me-2"></i> Pending</span>
+                <% } else if (booking.status === 'Disetujui') { %>
+                  <span class="badge-custom badge-approved"><i class="fa-solid fa-circle-check me-2"></i> Disetujui</span>
+                <% } else if (booking.status === 'Ditolak') { %>
+                  <span class="badge-custom badge-rejected"><i class="fa-solid fa-circle-xmark me-2"></i> Ditolak</span>
+                <% } else if (booking.status === 'Selesai') { %>
+                  <span class="badge-custom badge-completed"><i class="fa-solid fa-circle-check me-2"></i> Selesai</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              <div class="d-inline-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-muted rounded-circle mb-3" style="width: 60px; height: 60px;">
+                <i class="fa-solid fa-receipt fs-3"></i>
+              </div>
+              <p class="mb-3">Anda belum memiliki riwayat pemesanan mobil.</p>
+              <a href="/cars" class="btn btn-primary-custom btn-sm">
+                <i class="fa-solid fa-car-rear me-1"></i> Mulai Sewa Sekarang
+              </a>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

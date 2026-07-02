@@ -1,0 +1,170 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container my-5">
+  <div class="row align-items-center mb-5">
+    <div class="col-md-8">
+      <h2 class="mb-1 text-white font-outfit font-weight-bold">Dashboard Administrator</h2>
+      <p class="text-muted mb-0">Kelola pemesanan, verifikasi pengembalian, dan pantau performa bisnis rental mobil</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+      <a href="/admin/cars" class="btn btn-primary-custom">
+        <i class="fa-solid fa-car-rear me-2"></i> Kelola Armada Mobil
+      </a>
+    </div>
+  </div>
+
+  <!-- Alert Banner -->
+  <% if (error) { %>
+    <div class="alert alert-danger alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(239, 68, 68, 0.15); color: #f87171; border-radius: 8px;">
+      <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+      <div class="small"><%= error %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(16, 185, 129, 0.15); color: #34d399; border-radius: 8px;">
+      <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+      <div class="small"><%= success %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <!-- Statistik Utama -->
+  <div class="row g-4 mb-5">
+    <!-- Stat 1: Total Mobil -->
+    <div class="col-md-3">
+      <div class="glass-card stat-card cars shadow d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small d-block mb-1">Total Unit Mobil</span>
+          <h3 class="text-white font-outfit font-weight-bold mb-0"><%= stats.totalCars %></h3>
+        </div>
+        <div class="stat-icon bg-info bg-opacity-10 text-info">
+          <i class="fa-solid fa-car-rear"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stat 2: Total Pemesanan -->
+    <div class="col-md-3">
+      <div class="glass-card stat-card bookings shadow d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small d-block mb-1">Pemesanan Masuk</span>
+          <h3 class="text-white font-outfit font-weight-bold mb-0"><%= stats.totalBookings %></h3>
+        </div>
+        <div class="stat-icon bg-info bg-opacity-10 text-primary" style="color: var(--primary) !important;">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stat 3: Pelanggan Aktif -->
+    <div class="col-md-3">
+      <div class="glass-card stat-card shadow d-flex align-items-center justify-content-between" style="border-left-color: #a78bfa;">
+        <div>
+          <span class="text-muted small d-block mb-1">Pelanggan Terdaftar</span>
+          <h3 class="text-white font-outfit font-weight-bold mb-0"><%= stats.uniqueUsers %></h3>
+        </div>
+        <div class="stat-icon bg-opacity-10 text-purple" style="background-color: rgba(167, 139, 250, 0.1); color: #a78bfa;">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stat 4: Pendapatan Efektif -->
+    <div class="col-md-3">
+      <div class="glass-card stat-card revenue shadow d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small d-block mb-1">Total Pendapatan</span>
+          <h4 class="text-white font-outfit font-weight-bold mb-0 font-outfit" style="font-size: 1.15rem;">
+            <%= new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(stats.totalRevenue) %>
+          </h4>
+        </div>
+        <div class="stat-icon bg-success bg-opacity-10 text-success">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel Booking Transaksi -->
+  <h4 class="text-white font-outfit font-weight-bold mb-4">Daftar Transaksi Penyewaan</h4>
+  <div class="table-responsive-custom shadow-lg">
+    <table class="table table-custom mb-0">
+      <thead>
+        <tr>
+          <th>ID Booking</th>
+          <th>Nama Pelanggan</th>
+          <th>Rincian Armada</th>
+          <th class="text-center">Rentang Sewa</th>
+          <th class="text-end">Total Biaya</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Aksi / Ubah Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (bookings && bookings.length > 0) { %>
+          <% bookings.forEach(booking => { %>
+            <tr>
+              <td>
+                <span class="text-white font-outfit font-weight-bold">#RNT-<%= booking.id %></span>
+              </td>
+              <td>
+                <div>
+                  <span class="d-block text-white font-weight-bold mb-0"><%= booking.nama_user %></span>
+                  <span class="text-muted small">@<%= booking.username %> &bull; <i class="fa-solid fa-phone me-1 small"></i><%= booking.no_telepon %></span>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <span class="d-block text-white font-weight-bold mb-0"><%= booking.nama_mobil %></span>
+                  <span class="text-muted small"><%= booking.merek %></span>
+                </div>
+              </td>
+              <td class="text-center text-white">
+                <span class="d-block small fw-bold"><%= new Date(booking.tanggal_mulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) %></span>
+                <span class="text-muted small">s.d <%= new Date(booking.tanggal_selesai).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+              </td>
+              <td class="text-end text-white font-weight-bold font-outfit">
+                <%= new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(booking.total_harga) %>
+              </td>
+              <td class="text-center">
+                <% if (booking.status === 'Pending') { %>
+                  <span class="badge-custom badge-pending">Pending</span>
+                <% } else if (booking.status === 'Disetujui') { %>
+                  <span class="badge-custom badge-approved">Disetujui</span>
+                <% } else if (booking.status === 'Ditolak') { %>
+                  <span class="badge-custom badge-rejected">Ditolak</span>
+                <% } else if (booking.status === 'Selesai') { %>
+                  <span class="badge-custom badge-completed">Selesai</span>
+                <% } %>
+              </td>
+              <td class="text-center">
+                <form action="/admin/bookings/status/<%= booking.id %>" method="POST" style="margin: 0;">
+                  <select name="status" class="form-select form-select-sm border-secondary text-white font-outfit px-3" style="background-color: #1f2937; border-radius: 8px; min-width: 140px; cursor: pointer;" onchange="this.form.submit()">
+                    <option value="Pending" <%= booking.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="Disetujui" <%= booking.status === 'Disetujui' ? 'selected' : '' %>>Setujui</option>
+                    <option value="Ditolak" <%= booking.status === 'Ditolak' ? 'selected' : '' %>>Tolak</option>
+                    <option value="Selesai" <%= booking.status === 'Selesai' ? 'selected' : '' %>>Selesai</option>
+                  </select>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" class="text-center py-5 text-muted">
+              <div class="d-inline-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-muted rounded-circle mb-3" style="width: 60px; height: 60px;">
+                <i class="fa-solid fa-file-invoice-dollar fs-3"></i>
+              </div>
+              <p class="mb-0">Belum ada data pemesanan rental terdaftar di database.</p>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
