@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "car-rental-system",
   "version": "1.0.0",
   "description": "Sistem Penyewaan Mobil sederhana untuk tugas kuliah menggunakan Node.js, Express, EJS, dan MySQL",
@@ -7,17 +7,11 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [
-    "car-rental",
-    "express",
-    "mysql",
-    "ejs"
-  ],
+  "keywords": ["car-rental", "express", "mysql", "ejs"],
   "author": "Antigravity",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "car-rental-system": "file:../../../Users/asus_/.gemini/antigravity-ide/scratch/car-rental-system",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
