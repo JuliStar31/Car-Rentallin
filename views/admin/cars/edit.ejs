@@ -1,0 +1,91 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/navbar') %>
+
+<div class="container my-5" style="max-width: 750px;">
+  <!-- Tombol Kembali -->
+  <div class="mb-4">
+    <a href="/admin/cars" class="btn btn-secondary-custom btn-sm">
+      <i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Daftar Mobil
+    </a>
+  </div>
+
+  <!-- Form Card -->
+  <div class="glass-card p-4 p-md-5 shadow-lg">
+    <h3 class="text-white font-outfit font-weight-bold mb-1">Perbarui Data Mobil</h3>
+    <p class="text-muted small mb-4">Edit rincian spesifikasi, harga sewa, dan status ketersediaan unit mobil</p>
+    <hr class="text-secondary opacity-25 mb-4">
+
+    <!-- Notifikasi Error -->
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(239, 68, 68, 0.15); color: #f87171; border-radius: 8px;">
+        <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+        <div class="small"><%= error %></div>
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <!-- Form Edit Mobil -->
+    <form action="/admin/cars/edit/<%= car.id %>" method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <!-- Input Nama Mobil -->
+        <div class="col-md-6 mb-3">
+          <label for="nama_mobil" class="form-label text-muted small fw-bold">Nama Mobil</label>
+          <input type="text" class="form-control form-control-custom" id="nama_mobil" name="nama_mobil" value="<%= car.nama_mobil %>" required>
+        </div>
+        
+        <!-- Input Merek -->
+        <div class="col-md-6 mb-3">
+          <label for="merek" class="form-label text-muted small fw-bold">Merek Mobil</label>
+          <input type="text" class="form-control form-control-custom" id="merek" name="merek" value="<%= car.merek %>" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Input Tahun -->
+        <div class="col-md-6 mb-3">
+          <label for="tahun" class="form-label text-muted small fw-bold">Tahun Rilis</label>
+          <input type="number" class="form-control form-control-custom" id="tahun" name="tahun" min="2000" max="2035" value="<%= car.tahun %>" required>
+        </div>
+        
+        <!-- Input Harga -->
+        <div class="col-md-6 mb-3">
+          <label for="harga_per_hari" class="form-label text-muted small fw-bold">Tarif Sewa Per Hari (IDR)</label>
+          <input type="number" class="form-control form-control-custom" id="harga_per_hari" name="harga_per_hari" min="1000" value="<%= Math.round(car.harga_per_hari) %>" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Input Gambar File Baru -->
+        <div class="col-md-6 mb-3">
+          <label for="gambar" class="form-label text-muted small fw-bold">Ganti Gambar Unit</label>
+          <input type="file" class="form-control form-control-custom" id="gambar" name="gambar" accept="image/*">
+          <div class="form-text text-muted" style="font-size: 0.72rem;">* Biarkan kosong jika tidak ingin mengubah gambar mobil.</div>
+        </div>
+
+        <!-- Input Status Ketersediaan -->
+        <div class="col-md-6 mb-4">
+          <label for="status" class="form-label text-muted small fw-bold">Status Ketersediaan</label>
+          <select name="status" id="status" class="form-select form-control-custom" style="cursor: pointer;">
+            <option value="Tersedia" <%= car.status === 'Tersedia' ? 'selected' : '' %>>Tersedia</option>
+            <option value="Tidak Tersedia" <%= car.status === 'Tidak Tersedia' ? 'selected' : '' %>>Tidak Tersedia</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preview Gambar Lama -->
+      <div class="d-flex align-items-center mb-4 p-3 rounded" style="background-color: rgba(255,255,255,0.03); border: 1px solid var(--card-border);">
+        <img src="/uploads/<%= car.gambar %>" alt="<%= car.nama_mobil %>" class="rounded me-3 shadow-sm" style="width: 100px; height: 60px; object-fit: cover;" onerror="this.src='/uploads/default-car.jpg'">
+        <div>
+          <span class="d-block text-white small fw-bold">Gambar Saat Ini:</span>
+          <span class="text-muted small"><%= car.gambar %></span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary-custom w-100 py-2.5">
+        <i class="fa-solid fa-cloud-arrow-up me-2"></i> Perbarui Data Mobil
+      </button>
+    </form>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container my-5">
+  <div class="row align-items-center mb-5">
+    <div class="col-md-8">
+      <h2 class="mb-1 text-white font-outfit font-weight-bold">Armada Rental Mobil Terbaik</h2>
+      <p class="text-muted mb-0">Temukan berbagai jenis mobil berkualitas yang siap menemani perjalanan Anda dengan nyaman</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+      <a href="/bookings" class="btn btn-secondary-custom">
+        <i class="fa-solid fa-clock-rotate-left me-2"></i> Lihat Riwayat Sewa
+      </a>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <% if (error) { %>
+    <div class="alert alert-danger alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(239, 68, 68, 0.15); color: #f87171; border-radius: 8px;">
+      <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+      <div class="small"><%= error %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <% if (success) { %>
+    <div class="alert alert-success alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(16, 185, 129, 0.15); color: #34d399; border-radius: 8px;">
+      <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+      <div class="small"><%= success %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <!-- Grid Catalog Mobil -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <% if (cars && cars.length > 0) { %>
+      <% cars.forEach(car => { %>
+        <div class="col">
+          <div class="card glass-card h-100 shadow border-0 overflow-hidden" style="<%= car.status === 'Tidak Tersedia' ? 'opacity: 0.65;' : '' %>">
+            
+            <!-- Cover Gambar Mobil -->
+            <div class="card-img-container">
+              <img src="/uploads/<%= car.gambar %>" alt="<%= car.nama_mobil %>" onerror="this.src='/uploads/default-car.jpg'">
+              
+              <% if (car.status === 'Tersedia') { %>
+                <span class="badge badge-availability bg-success"><i class="fa-solid fa-check-circle me-1"></i> Tersedia</span>
+              <% } else { %>
+                <span class="badge badge-availability bg-danger"><i class="fa-solid fa-ban me-1"></i> Tersewa</span>
+              <% } %>
+            </div>
+
+            <!-- Detail Spesifikasi Singkat -->
+            <div class="card-body d-flex flex-column p-4">
+              <span class="text-info font-outfit small uppercase letter-spacing-1 font-weight-bold mb-1"><%= car.merek %></span>
+              <h5 class="card-title text-white font-outfit font-weight-bold mb-2"><%= car.nama_mobil %></h5>
+              
+              <div class="d-flex justify-content-between text-muted small mb-3 border-bottom pb-3" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                <span><i class="fa-regular fa-calendar-alt me-1 text-secondary"></i> Tahun <%= car.tahun %></span>
+                <span><i class="fa-solid fa-gas-pump me-1 text-secondary"></i> Bensin</span>
+              </div>
+              
+              <div class="mt-auto">
+                <span class="text-muted small d-block">Harga sewa per hari</span>
+                <div class="d-flex align-items-baseline mb-3">
+                  <h4 class="text-white font-outfit font-weight-bold mb-0">
+                    <%= new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(car.harga_per_hari) %>
+                  </h4>
+                  <span class="text-muted small ms-1">/ hari</span>
+                </div>
+
+                <% if (car.status === 'Tersedia') { %>
+                  <a href="/cars/detail/<%= car.id %>" class="btn btn-primary-custom w-100 py-2">
+                    <i class="fa-solid fa-key me-2"></i> Sewa Sekarang
+                  </a>
+                <% } else { %>
+                  <button class="btn btn-secondary-custom w-100 py-2" disabled>
+                    <i class="fa-solid fa-lock me-2"></i> Sedang Disewa
+                  </button>
+                <% } %>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-12 text-center py-5">
+        <div class="d-inline-flex align-items-center justify-content-center bg-secondary bg-opacity-10 text-muted rounded-circle mb-3" style="width: 80px; height: 80px;">
+          <i class="fa-solid fa-car-rear fs-2"></i>
+        </div>
+        <h4 class="text-white font-outfit">Belum Ada Mobil Tersedia</h4>
+        <p class="text-muted">Administrator belum menambahkan unit kendaraan ke sistem.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

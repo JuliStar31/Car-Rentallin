@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container my-5">
+  <!-- Navigasi Kembali -->
+  <div class="mb-4">
+    <a href="/cars" class="btn btn-secondary-custom btn-sm">
+      <i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Katalog
+    </a>
+  </div>
+
+  <!-- Alert Notifikasi -->
+  <% if (error) { %>
+    <div class="alert alert-danger alert-dismissible fade show border-0 d-flex align-items-center mb-4 shadow" role="alert" style="background-color: rgba(239, 68, 68, 0.15); color: #f87171; border-radius: 8px;">
+      <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+      <div class="small"><%= error %></div>
+      <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <div class="row g-5">
+    
+    <!-- Kolom Kiri: Visual Unit & Spek -->
+    <div class="col-lg-7">
+      <img src="/uploads/<%= car.gambar %>" alt="<%= car.nama_mobil %>" class="car-detail-img shadow-lg mb-4" onerror="this.src='/uploads/default-car.jpg'">
+      
+      <div class="glass-card p-4">
+        <span class="text-info font-outfit uppercase font-weight-bold text-sm"><%= car.merek %></span>
+        <h2 class="text-white font-outfit font-weight-bold mb-3"><%= car.nama_mobil %></h2>
+        
+        <p class="text-muted mb-4">
+          Rasakan pengalaman berkendara terbaik dengan menyewa <strong><%= car.nama_mobil %></strong> model tahun <strong><%= car.tahun %></strong>. 
+          Kendaraan kami selalu melewati tahap inspeksi kebersihan dan perawatan mesin secara berkala untuk kenyamanan serta keselamatan berkendara Anda.
+        </p>
+        
+        <h5 class="text-white font-outfit mb-3 border-bottom pb-2" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+          Fasilitas & Fitur Utama Unit
+        </h5>
+        
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="feature-pill"><i class="fa-solid fa-snowflake"></i> Pendingin AC Double Blower</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="feature-pill"><i class="fa-solid fa-gas-pump"></i> Efisiensi Bahan Bakar Tinggi</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="feature-pill"><i class="fa-solid fa-music"></i> Sistem Audio Bluetooth & USB</div>
+          </div>
+          <div class="col-sm-6">
+            <div class="feature-pill"><i class="fa-solid fa-shield-halved"></i> Perlindungan Keamanan Standar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kolom Kanan: Panel Form Booking -->
+    <div class="col-lg-5">
+      <div class="glass-card p-4 shadow-lg position-sticky" style="top: 100px;">
+        <h4 class="text-white font-outfit font-weight-bold mb-3">Reservasi Penyewaan</h4>
+        <p class="text-muted small">Silakan pilih rentang tanggal untuk menghitung total tarif rental</p>
+        <hr class="text-secondary opacity-25 mb-4">
+
+        <form action="/bookings/add" method="POST">
+          <!-- Simpan referensi input untuk script kalkulator di main.js -->
+          <input type="hidden" id="harga_per_hari" value="<%= car.harga_per_hari %>">
+          <input type="hidden" name="car_id" value="<%= car.id %>">
+
+          <div class="mb-4">
+            <span class="text-muted small d-block">Harga sewa per hari</span>
+            <h3 class="text-info font-outfit font-weight-bold mb-0">
+              <%= new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(car.harga_per_hari) %>
+            </h3>
+          </div>
+
+          <!-- Input Tanggal Mulai -->
+          <div class="mb-3">
+            <label for="tanggal_mulai" class="form-label text-muted small">Tanggal Mulai Sewa</label>
+            <div class="input-group">
+              <span class="input-group-text border-0 ps-3 pe-0" style="background-color: rgba(17, 24, 39, 0.8); color: #6b7280;">
+                <i class="fa-regular fa-calendar-plus"></i>
+              </span>
+              <input type="date" class="form-control form-control-custom ps-3" id="tanggal_mulai" name="tanggal_mulai" required>
+            </div>
+          </div>
+
+          <!-- Input Tanggal Selesai -->
+          <div class="mb-4">
+            <label for="tanggal_selesai" class="form-label text-muted small">Tanggal Selesai Sewa</label>
+            <div class="input-group">
+              <span class="input-group-text border-0 ps-3 pe-0" style="background-color: rgba(17, 24, 39, 0.8); color: #6b7280;">
+                <i class="fa-regular fa-calendar-check"></i>
+              </span>
+              <input type="date" class="form-control form-control-custom ps-3" id="tanggal_selesai" name="tanggal_selesai" required>
+            </div>
+          </div>
+
+          <!-- Ringkasan Biaya Sewa -->
+          <div class="p-3 mb-4 rounded-3" style="background-color: rgba(255, 255, 255, 0.04); border: 1px dashed rgba(255, 255, 255, 0.12);">
+            <div class="d-flex justify-content-between mb-2 small text-muted">
+              <span id="duration-text">Durasi sewa: -</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-white small">Total Pembayaran:</span>
+              <h4 class="text-success font-outfit font-weight-bold mb-0" id="total-harga-text">Rp 0</h4>
+            </div>
+          </div>
+
+          <!-- Tombol Kirim Pemesanan -->
+          <button type="submit" class="btn btn-primary-custom w-100 py-2.5 font-weight-bold" id="booking-submit-btn" disabled>
+            <i class="fa-solid fa-paper-plane me-2"></i> Ajukan Pemesanan Mobil
+          </button>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
